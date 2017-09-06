@@ -2,8 +2,14 @@
 
 require '../vendor/autoload.php';
 
-$app = new \Framework\App();
+use \Framework\App;
+use \GuzzleHttp\Psr7\ServerRequest;
+use function \Http\Response\send as send_response;
 
-$response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+$app = new App([
+    \App\Blog\BlogModule::class
+]);
 
-\Http\Response\send($response);
+$response = $app->run(ServerRequest::fromGlobals());
+
+send_response($response);
