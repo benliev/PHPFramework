@@ -8,7 +8,7 @@ namespace Framework\Routing;
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework
  */
-class Route implements RouteInterface
+class Route
 {
     /**
      * @var string
@@ -16,7 +16,7 @@ class Route implements RouteInterface
     private $name;
 
     /**
-     * @var callable
+     * @var callable|string
      */
     private $callback;
 
@@ -28,10 +28,10 @@ class Route implements RouteInterface
     /**
      * Route constructor.
      * @param string $name
-     * @param callable $callback
+     * @param callable|string $callback
      * @param array $params
      */
-    public function __construct(string $name, callable $callback, array $params = [])
+    public function __construct(string $name, $callback, array $params = [])
     {
 
         $this->name = $name;
@@ -48,9 +48,9 @@ class Route implements RouteInterface
     }
 
     /**
-     * @return callable
+     * @return callable|string
      */
-    public function getCallback(): callable
+    public function getCallback()
     {
         return $this->callback;
     }

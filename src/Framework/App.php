@@ -4,6 +4,7 @@ namespace Framework;
 
 use Framework\Routing\Router;
 use GuzzleHttp\Psr7\Response;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -25,21 +26,22 @@ class App
     private $router;
 
     /**
-     * App constructor.
-     * @param string[] $modules List of modules to load
-     * @param array $dependencies
+     * @var ContainerInterface
      */
-    public function __construct(array $modules = [], array $dependencies = [])
+    private $container;
+
+    /**
+     * App constructor.
+     * @param ContainerInterface $container
+     * @param string[] $modules List of modules to load
+     */
+    public function __construct(ContainerInterface $container, array $modules = [])
     {
-        $this->router = new Router();
-        $renderer = null;
-        if (array_key_exists('renderer', $dependencies)) {
-            $renderer = $dependencies['renderer'];
-            $renderer->addGlobal('router', $this->router);
-        }
         foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router, $renderer);
+            $this->modules[] = $container->get($module);
         }
+        $this->container = $container;
+        $this->router = $container->get(Router::class);
     }
 
     /**
@@ -65,7 +67,10 @@ class App
         foreach ($route->getParams() as $key => $value) {
             $request = $request->withAttribute($key, $value);
         }
-
+        $callback = $route->getCallback();
+        if (is_string($callback)) {
+            $callback = $this->container->get($callback);
+        }
         $response = call_user_func_array($route->getCallback(), [$request]);
 
         if (is_string($response)) {

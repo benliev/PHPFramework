@@ -2,43 +2,20 @@
 
 namespace App\Blog;
 
-use Framework\Renderer;
-use Framework\Routing\RouterInterface;
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use App\Blog\Actions\BlogAction;
+use Framework\Module;
+use Framework\Renderer\RendererInterface;
+use Framework\Routing\Router;
 
-class BlogModule
+class BlogModule extends Module
 {
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    const DEFINITIONS = __DIR__.'/config.php';
 
-    /**
-     * @var Renderer
-     */
-    private $renderer;
-
-    public function __construct(RouterInterface $router, Renderer $renderer)
+    public function __construct(string $prefix, Router $router, RendererInterface $renderer)
     {
-        $this->renderer = $renderer;
-        $this->renderer->addPath('blog', __DIR__.'/views');
-
-        $this->router = $router;
-        $this->router->get('/blog', [$this, 'index'], 'blog.index');
-        $this->router->get('/blog/{slug:[a-z\-]+}', [$this, 'show'], 'blog.show');
-    }
-
-    public function index(ServerRequestInterface $request): string
-    {
-        return $this->renderer->render('@blog/index');
-    }
-
-    public function show(ServerRequestInterface $request): string
-    {
-        $slug = $request->getAttribute('slug');
-        return $this->renderer->render('@blog/show', compact('slug'));
+        $renderer->addPath('blog', __DIR__.'/views');
+        $router->get($prefix, BlogAction::class, 'blog.index');
+        $router->get($prefix.'/{slug:[a-z\-]+}', BlogAction::class, 'blog.show');
     }
 }

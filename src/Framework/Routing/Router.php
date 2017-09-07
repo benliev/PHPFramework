@@ -14,7 +14,7 @@ use \Zend\Expressive\Router\Route as ZendRoute;
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework
  */
-class Router implements RouterInterface
+class Router
 {
     /**
      * @var FastRouteRouter
@@ -32,10 +32,10 @@ class Router implements RouterInterface
     /**
      * Register a route with method precised
      * @param string $path
-     * @param callable $callable
+     * @param callable|string $callable
      * @param string $name
      */
-    public function any(string $path, callable $callable, string $name)
+    public function any(string $path, $callable, string $name)
     {
         $this->router->addRoute(new ZendRoute($path, $callable, ZendRoute::HTTP_METHOD_ANY, $name));
     }
@@ -43,10 +43,10 @@ class Router implements RouterInterface
     /**
      * Register a route with get method
      * @param string $path
-     * @param callable $callable
+     * @param callable|string $callable
      * @param string $name
      */
-    public function get(string $path, callable $callable, string $name)
+    public function get(string $path, $callable, string $name)
     {
         $this->router->addRoute(new ZendRoute($path, $callable, ['GET'], $name));
     }
@@ -54,10 +54,10 @@ class Router implements RouterInterface
     /**
      * Register a route with post method
      * @param string $path
-     * @param callable $callable
+     * @param callable|string $callable
      * @param string $name
      */
-    public function post(string $path, callable $callable, string $name)
+    public function post(string $path, $callable, string $name)
     {
         $this->router->addRoute(new ZendRoute($path, $callable, ['POST'], $name));
     }
@@ -65,10 +65,10 @@ class Router implements RouterInterface
     /**
      * Register a route with post method
      * @param string $path
-     * @param callable $callable
+     * @param callable|string $callable
      * @param string $name
      */
-    public function put(string $path, callable $callable, string $name)
+    public function put(string $path, $callable, string $name)
     {
         $this->router->addRoute(new ZendRoute($path, $callable, ['PUT'], $name));
     }
@@ -76,10 +76,10 @@ class Router implements RouterInterface
     /**
      * Register a route with post method
      * @param string $path
-     * @param callable $callable
+     * @param callable|string $callable
      * @param string $name
      */
-    public function delete(string $path, callable $callable, string $name)
+    public function delete(string $path, $callable, string $name)
     {
         $this->router->addRoute(new ZendRoute($path, $callable, ['DELETE'], $name));
     }
@@ -87,9 +87,9 @@ class Router implements RouterInterface
     /**
      * Match the uri in request with a route defined or null if not found the match
      * @param ServerRequestInterface $request
-     * @return RouteInterface the route or null if not match
+     * @return Route the route or null if not match
      */
-    public function match(ServerRequestInterface $request): ?RouteInterface
+    public function match(ServerRequestInterface $request): ?Route
     {
         $result = $this->router->match($request);
         if ($result->isSuccess()) {

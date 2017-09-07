@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Framework;
+namespace Framework\Renderer;
 
 /**
  * Class Renderer
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework
  */
-class Renderer implements RendererInterface
+class PHPRenderer implements RendererInterface
 {
     /**
      * @var string
@@ -84,11 +84,11 @@ class Renderer implements RendererInterface
 
     /**
      * Add global variables for all views
-     * @param string $key
+     * @param string $name
      * @param $value
      */
-    public function addGlobal(string $key, $value): void
+    public function addGlobal(string $name, $value): void
     {
-        $this->globals[$key] = $value;
+        $this->globals[$name] = $value;
     }
 }
