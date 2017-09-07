@@ -8,7 +8,7 @@ namespace Framework;
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework
  */
-class Renderer
+class Renderer implements RendererInterface
 {
     /**
      * @var string
@@ -24,6 +24,13 @@ class Renderer
      * @var array $globals variables injected for all views
      */
     private $globals = [];
+
+    public function __construct(?string $defaultPath = null)
+    {
+        if (!is_null($defaultPath)) {
+            $this->addPath($defaultPath);
+        }
+    }
 
     /**
      * Add path for load views
