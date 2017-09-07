@@ -2,6 +2,7 @@
 
 namespace Tests\Framework\Modules;
 
+use Framework\Renderer;
 use Framework\Routing\RouterInterface;
 
 /**

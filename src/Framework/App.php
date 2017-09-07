@@ -27,15 +27,27 @@ class App
     /**
      * App constructor.
      * @param string[] $modules List of modules to load
+     * @param array $dependencies
      */
-    public function __construct(array $modules = [])
+    public function __construct(array $modules = [], array $dependencies = [])
     {
         $this->router = new Router();
+        $renderer = null;
+        if (array_key_exists('renderer', $dependencies)) {
+            $renderer = $dependencies['renderer'];
+            $renderer->addGlobal('router', $this->router);
+        }
         foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router);
+            $this->modules[] = new $module($this->router, $renderer);
         }
     }
 
+    /**
+     * Run the app with the request injected
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws \Exception
+     */
     public function run(ServerRequestInterface $request) : ResponseInterface
     {
         $uri = $request->getUri()->getPath();

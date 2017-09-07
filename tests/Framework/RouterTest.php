@@ -37,23 +37,6 @@ class RouterTest extends TestCase
         $this->assertEquals('hello', call_user_func_array($route->getCallback(), [$request]));
     }
 
-    public function testBlogIndexAction()
-    {
-        $app = new App([BlogModule::class]);
-        $request = new ServerRequest('GET', '/blog');
-        $response = $app->run($request);
-        $this->assertContains('<h1>Bienvenue sur le blog</h1>', (string)$response->getBody());
-    }
-
-    public function testBlogShowAction()
-    {
-        $app = new App([BlogModule::class]);
-        $slug = 'article-de-test';
-        $request = new ServerRequest('GET', "/blog/$slug");
-        $response = $app->run($request);
-        $this->assertContains("<h1>Bienvenue sur l'article $slug</h1>", (string)$response->getBody());
-    }
-
     public function testGetMethodIfURLDoesNotExists()
     {
         $request = new ServerRequest('GET', '/blog/mon-slug-8');
