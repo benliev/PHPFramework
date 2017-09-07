@@ -1,11 +1,11 @@
 <?php
 
-require '../vendor/autoload.php';
+require dirname(__DIR__).'/vendor/autoload.php';
 
 use \Framework\App;
 use \Framework\Renderer\TwigRenderer;
 use \GuzzleHttp\Psr7\ServerRequest;
-use function \Http\Response\send as send_response;
+use function \Http\Response\send;
 use \DI\ContainerBuilder;
 
 $modules = [
@@ -17,15 +17,15 @@ $builder->addDefinitions(dirname(__DIR__).'/config/config.php');
 $builder->addDefinitions(dirname(__DIR__).'/config.php');
 
 foreach ($modules as $module) {
-    if ($modules::DEFINITIONS) {
-        $builder->addDefinitions($modules::DEFINITIONS);
+    if ($module::DEFINITIONS) {
+        $builder->addDefinitions($module::DEFINITIONS);
     }
 }
 
 $container = $builder->build();
 
-$app = new App($container, $modules);
-
-$response = $app->run(ServerRequest::fromGlobals());
-
-send_response($response);
+if (php_sapi_name() != 'cli') {
+    $app = new App($container, $modules);
+    $response = $app->run(ServerRequest::fromGlobals());
+    send($response);
+}

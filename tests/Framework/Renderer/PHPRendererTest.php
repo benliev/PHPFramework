@@ -21,8 +21,8 @@ class RendererTest extends TestCase
     public function setUp()
     {
         $this->renderer = new PHPRenderer();
-        $this->renderer->addPath(__DIR__ . '/views', 'blog');
-        $this->renderer->addPath(__DIR__ . '/views');
+        $this->renderer->addPath(dirname(__DIR__).'/views', 'blog');
+        $this->renderer->addPath(dirname(__DIR__).'/views');
     }
 
     public function testRenderTheRightPath()

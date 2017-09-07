@@ -9,6 +9,10 @@ use Psr\Container\ContainerInterface;
 use function DI\{factory, object, get};
 
 return [
+    'database.host' => 'localhost',
+    'database.username' => 'root',
+    'database.password' => 'root',
+    'database.name' => 'blog',
     'views.path' => dirname(__DIR__).DIRECTORY_SEPARATOR.'views',
     'twig.extensions' => [
         get(RouterTwigExtension::class)
