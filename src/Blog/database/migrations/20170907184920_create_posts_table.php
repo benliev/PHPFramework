@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Blog\database\migrations;
-
 use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 

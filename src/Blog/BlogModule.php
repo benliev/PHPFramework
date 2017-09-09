@@ -11,7 +11,7 @@ class BlogModule extends Module
 {
 
     const DEFINITIONS = __DIR__.'/config.php';
-    const MIGRATIONS = __DIR__.'/database/migrations';
+    const MIGRATIONS = __DIR__.DIRECTORY_SEPARATOR.'database/migrations';
     const SEEDS = __DIR__.'/database/seeds';
 
     public function __construct(string $prefix, Router $router, RendererInterface $renderer)

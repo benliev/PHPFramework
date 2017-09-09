@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Blog\database\seeds;
-
 use Faker\Factory;
 use Phinx\Seed\AbstractSeed;
 
