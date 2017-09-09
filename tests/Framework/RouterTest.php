@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class RouterTest extends TestCase
 {
     /**
-     * @var RouterInterface
+     * @var Router
      */
     private $router;
 
@@ -76,5 +76,14 @@ class RouterTest extends TestCase
         }, 'post.show');
         $uri = $this->router->generateUri('post.show', ['slug' => 'mon-article', 'id' => 18]);
         $this->assertEquals('/blog/mon-article-18', $uri);
+    }
+
+    public function testGenerateUriWithQueryParams()
+    {
+        $this->router->get('/blog', function () {
+            return '';
+        }, 'posts.index');
+        $uri = $this->router->generateUri('posts.index', [], ['page' => 2]);
+        $this->assertEquals('/blog?page=2', $uri);
     }
 }

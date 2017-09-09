@@ -16,7 +16,7 @@ class BlogModule extends Module
 
     public function __construct(string $prefix, Router $router, RendererInterface $renderer)
     {
-        $renderer->addPath('blog', __DIR__.'/views');
+        $renderer->addPath(__DIR__.'/views', 'blog');
         $router->get($prefix, BlogAction::class, 'blog.index');
         $router->get($prefix.'/{slug:[a-z\-]+}-{id:\d+}', BlogAction::class, 'blog.show');
     }
