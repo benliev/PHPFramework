@@ -2,30 +2,32 @@
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-use \Framework\App;
-use \Framework\Renderer\TwigRenderer;
-use \GuzzleHttp\Psr7\ServerRequest;
-use function \Http\Response\send;
-use \DI\ContainerBuilder;
+use App\Admin\AdminModule;
+use App\Blog\BlogModule;
+use Framework\App;
+use GuzzleHttp\Psr7\ServerRequest;
+use function Http\Response\send;
+use Framework\Middleware\{
+    TrailingSlashMiddleware,
+    MethodMiddleware,
+    NotFoundMiddleware,
+    RouterMiddleware,
+    RouteDispatcherMiddleware
+};
+use Middlewares\Whoops;
 
-$modules = [
-    \App\Blog\BlogModule::class
-];
-
-$builder = new ContainerBuilder();
-$builder->addDefinitions(dirname(__DIR__).'/config/config.php');
-$builder->addDefinitions(dirname(__DIR__).'/config.php');
-
-foreach ($modules as $module) {
-    if ($module::DEFINITIONS) {
-        $builder->addDefinitions($module::DEFINITIONS);
-    }
-}
-
-$container = $builder->build();
+$app = (new App(dirname(__DIR__).'/config/config.php'))
+    ->addModule(AdminModule::class)
+    ->addModule(BlogModule::class)
+    ->pipe(TrailingSlashMiddleware::class)
+    ->pipe(MethodMiddleware::class)
+    ->pipe(RouterMiddleware::class)
+    ->pipe(RouteDispatcherMiddleware::class)
+    ->pipe(Whoops::class)
+    ->pipe(NotFoundMiddleware::class)
+;
 
 if (php_sapi_name() != 'cli') {
-    $app = new App($container, $modules);
     $response = $app->run(ServerRequest::fromGlobals());
     send($response);
 }

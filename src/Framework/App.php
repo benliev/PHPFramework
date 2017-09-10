@@ -2,8 +2,12 @@
 
 namespace Framework;
 
+use DI\ContainerBuilder;
+use Framework\Middleware\Dispatcher;
 use Framework\Routing\Router;
 use GuzzleHttp\Psr7\Response;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class App
 {
     /**
-     * @var array
+     * @var Module[]
      */
     private $modules = [];
 
@@ -31,17 +35,44 @@ class App
     private $container;
 
     /**
-     * App constructor.
-     * @param ContainerInterface $container
-     * @param string[] $modules List of modules to load
+     * @var string
      */
-    public function __construct(ContainerInterface $container, array $modules = [])
+    private $definition;
+
+    /**
+     * @var string[]
+     */
+    private $middlewares;
+
+    /**
+     * App constructor.
+     * @param string $definition
+     */
+    public function __construct(string $definition)
     {
-        foreach ($modules as $module) {
-            $this->modules[] = $container->get($module);
-        }
-        $this->container = $container;
-        $this->router = $container->get(Router::class);
+        $this->definition = $definition;
+    }
+
+    /**
+     * Add module to app
+     * @param string $module
+     * @return App
+     */
+    public function addModule(string $module) : self
+    {
+        $this->modules[] = $module;
+        return $this;
+    }
+
+    /**
+     * Add a middleware
+     * @param string $middleware
+     * @return App
+     */
+    public function pipe(string $middleware) : self
+    {
+        $this->middlewares [] = $middleware;
+        return $this;
     }
 
     /**
@@ -52,33 +83,26 @@ class App
      */
     public function run(ServerRequestInterface $request) : ResponseInterface
     {
-        $uri = $request->getUri()->getPath();
+        // Build container
+        $builder = new ContainerBuilder();
+        $builder->addDefinitions($this->definition);
+        foreach ($this->modules as $module) {
+            if ($module::DEFINITIONS) {
+                $builder->addDefinitions($module::DEFINITIONS);
+            }
+        }
+        $container = $builder->build();
 
-        if (!empty($uri) && $uri[-1] == '/') {
-            return new Response(301, ['Location' => substr($uri, 0, -1)]);
+        // Create modules
+        foreach ($this->modules as $module) {
+            $container->get($module);
         }
 
-        $route = $this->router->match($request);
-
-        if (is_null($route)) {
-            return new Response(404, [], '<h1>Erreur 404</h1>');
+        // Create a dispatcher and process middlewares recorded
+        $dispatcher = new Dispatcher();
+        foreach ($this->middlewares as $middleware) {
+            $dispatcher->pipe($container->get($middleware));
         }
-
-        foreach ($route->getParams() as $key => $value) {
-            $request = $request->withAttribute($key, $value);
-        }
-        $callback = $route->getCallback();
-        if (is_string($callback)) {
-            $callback = $this->container->get($callback);
-        }
-        $response = call_user_func_array($callback, [$request]);
-
-        if (is_string($response)) {
-            return new Response(200, [], $response);
-        } elseif ($response instanceof ResponseInterface) {
-            return $response;
-        } else {
-            throw new \Exception("The response is not a string or an instance of ResponseInterface");
-        }
+        return $dispatcher->process($request);
     }
 }
