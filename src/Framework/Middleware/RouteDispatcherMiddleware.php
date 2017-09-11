@@ -45,7 +45,7 @@ class RouteDispatcherMiddleware implements MiddlewareInterface
     {
         /** @var Route $route */
         $route = $request->getAttribute(Route::class);
-        if(is_null($route)) {
+        if (is_null($route)) {
             return $delegate->process($request);
         }
         $callback = $route->getCallback();

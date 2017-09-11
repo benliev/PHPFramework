@@ -85,6 +85,22 @@ class Router
     }
 
     /**
+     * Generate CRUD routes
+     * @param string $prefixPath
+     * @param $callable
+     * @param string $prefixName
+     */
+    public function crud(string $prefixPath, $callable, string $prefixName)
+    {
+        $this->get($prefixPath, $callable, "$prefixName.index");
+        $this->get("$prefixPath/new", $callable, "$prefixName.create");
+        $this->post("$prefixPath/new", $callable);
+        $this->get("$prefixPath/{id:\d+}", $callable, "$prefixName.edit");
+        $this->put("$prefixPath/{id:\d+}", $callable);
+        $this->delete($prefixPath, $callable, "$prefixName.delete");
+    }
+
+    /**
      * Match the uri in request with a route defined or null if not found the match
      * @param ServerRequestInterface $request
      * @return Route the route or null if not match

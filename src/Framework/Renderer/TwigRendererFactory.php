@@ -12,6 +12,10 @@ use Psr\Container\ContainerInterface;
  */
 class TwigRendererFactory
 {
+    /**
+     * @param ContainerInterface $container
+     * @return TwigRenderer
+     */
     public function __invoke(ContainerInterface $container)
     {
         $viewPath = $container->get('views.path');

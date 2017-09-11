@@ -20,11 +20,6 @@ use Psr\Http\Message\ServerRequestInterface;
 class App
 {
     /**
-     * @var Module[]
-     */
-    private $modules = [];
-
-    /**
      * @var Router
      */
     private $router;
@@ -40,39 +35,16 @@ class App
     private $definition;
 
     /**
-     * @var string[]
-     */
-    private $middlewares;
-
-    /**
      * App constructor.
      * @param string $definition
+     * @param array $modules
+     * @param array $middlewares
      */
-    public function __construct(string $definition)
+    public function __construct(string $definition, array $modules, array $middlewares)
     {
         $this->definition = $definition;
-    }
-
-    /**
-     * Add module to app
-     * @param string $module
-     * @return App
-     */
-    public function addModule(string $module) : self
-    {
-        $this->modules[] = $module;
-        return $this;
-    }
-
-    /**
-     * Add a middleware
-     * @param string $middleware
-     * @return App
-     */
-    public function pipe(string $middleware) : self
-    {
-        $this->middlewares [] = $middleware;
-        return $this;
+        $this->modules = $modules;
+        $this->middlewares = $middlewares;
     }
 
     /**
@@ -83,26 +55,35 @@ class App
      */
     public function run(ServerRequestInterface $request) : ResponseInterface
     {
-        // Build container
-        $builder = new ContainerBuilder();
-        $builder->addDefinitions($this->definition);
-        foreach ($this->modules as $module) {
-            if ($module::DEFINITIONS) {
-                $builder->addDefinitions($module::DEFINITIONS);
-            }
-        }
-        $container = $builder->build();
-
         // Create modules
         foreach ($this->modules as $module) {
-            $container->get($module);
+            $this->getContainer()->get($module);
         }
 
         // Create a dispatcher and process middlewares recorded
         $dispatcher = new Dispatcher();
         foreach ($this->middlewares as $middleware) {
-            $dispatcher->pipe($container->get($middleware));
+            $dispatcher->pipe($this->getContainer()->get($middleware));
         }
         return $dispatcher->process($request);
+    }
+
+    /**
+     * @return \DI\Container|ContainerInterface
+     */
+    public function getContainer()
+    {
+        if (is_null($this->container)) {
+            // Build container
+            $builder = new ContainerBuilder();
+            $builder->addDefinitions($this->definition);
+            foreach ($this->modules as $module) {
+                if ($module::DEFINITIONS) {
+                    $builder->addDefinitions($module::DEFINITIONS);
+                }
+            }
+            $this->container = $builder->build();
+        }
+        return $this->container;
     }
 }

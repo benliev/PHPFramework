@@ -1,33 +1,14 @@
 <?php
 
+// load composer autoloader
 require dirname(__DIR__).'/vendor/autoload.php';
 
-use App\Admin\AdminModule;
-use App\Blog\BlogModule;
-use Framework\App;
-use GuzzleHttp\Psr7\ServerRequest;
-use function Http\Response\send;
-use Framework\Middleware\{
-    TrailingSlashMiddleware,
-    MethodMiddleware,
-    NotFoundMiddleware,
-    RouterMiddleware,
-    RouteDispatcherMiddleware
-};
-use Middlewares\Whoops;
+$modules = require(dirname(__DIR__).'/config/modules.php');
+$middlewares = require(dirname(__DIR__).'/config/middlewares.php');
 
-$app = (new App(dirname(__DIR__).'/config/config.php'))
-    ->addModule(AdminModule::class)
-    ->addModule(BlogModule::class)
-    ->pipe(TrailingSlashMiddleware::class)
-    ->pipe(MethodMiddleware::class)
-    ->pipe(RouterMiddleware::class)
-    ->pipe(RouteDispatcherMiddleware::class)
-    ->pipe(Whoops::class)
-    ->pipe(NotFoundMiddleware::class)
-;
+$app = new \Framework\App(dirname(__DIR__).'/config/config.php', $modules, $middlewares);
 
 if (php_sapi_name() != 'cli') {
-    $response = $app->run(ServerRequest::fromGlobals());
-    send($response);
+    $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+    \Http\Response\send($response);
 }

@@ -26,19 +26,30 @@ class PostTableTest extends DatabaseTestCase
 
     public function testFind()
     {
+        $this->seedDatabase();
         $post = $this->postTable->find(1);
-        $this->assertInstanceOf($post, Post::class);
+        $this->assertInstanceOf(Post::class, $post);
     }
 
     public function testFindUnknowRecord()
     {
+        $this->seedDatabase();
         $post = $this->postTable->find(1000);
         $this->assertNull($post);
     }
 
     public function testUpdate()
     {
+        $this->seedDatabase();
         $this->postTable->update(1, ['name' => 'salut', 'slug' => 'demo']);
+        $post = $this->postTable->find(1);
+        $this->assertEquals('salut', $post->name);
+        $this->assertEquals('demo', $post->slug);
+    }
+
+    public function testInsert()
+    {
+        $this->postTable->insert(['name' => 'salut', 'slug' => 'demo']);
         $post = $this->postTable->find(1);
         $this->assertEquals('salut', $post->name);
         $this->assertEquals('demo', $post->slug);

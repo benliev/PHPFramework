@@ -54,8 +54,13 @@ class AdminBlogAction
      */
     public function __invoke(Request $request) : Response
     {
-        $id = $request->getAttribute('id');
-        if ($id) {
+        if ($request->getMethod() === 'DELETE') {
+            $this->delete($request);
+        }
+        if (substr((string)$request->getUri(), -3) === 'new') {
+            return $this->create($request);
+        }
+        if ($request->getAttribute('id')) {
             return $this->edit($request);
         }
         return $this->index($request);
@@ -82,8 +87,50 @@ class AdminBlogAction
         $item = $this->postTable->find($request->getAttribute('id'));
 
         if ($request->getMethod() === 'POST') {
+            $params = $this->getParams($request);
+            $params['updated_at'] = date('Y-m-d H:i:s');
+            $this->postTable->update($item->id, $params);
+            return $this->redirect('admin.blog.index');
         }
 
         return $this->render('@blog/admin/edit', compact('item'));
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function create(Request $request)
+    {
+        if ($request->getMethod() === 'POST') {
+            $params = $this->getParams($request);
+            $params['updated_at'] = date('Y-m-d H:i:s');
+            $params['created_at'] = date('Y-m-d H:i:s');
+            $this->postTable->insert($params);
+            return $this->redirect('admin.blog.index');
+        }
+
+        return $this->render('@blog/admin/create');
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function getParams(Request $request) : array
+    {
+        return array_filter($request->getParsedBody(), function ($key) {
+            return in_array($key, ['name', 'content', 'slug']);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request)
+    {
+        $this->postTable->delete($request->getAttribute('id'));
+        return $this->redirect('blog.admin.index');
     }
 }

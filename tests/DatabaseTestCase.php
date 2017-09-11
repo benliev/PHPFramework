@@ -18,30 +18,37 @@ class DatabaseTestCase extends TestCase
     /**
      * @var PDO
      */
-    protected $pdo;
+    public $pdo;
+
+    /**
+     * @var Manager
+     */
+    private $manager;
 
     public function setUp()
     {
-        $this->pdo = new PDO('sqlite::memory:', null, null, [
+        $this->pdo = new PDO('sqlite:test.db', null, null, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-            PDO::ATTR_PERSISTENT, true,
         ]);
 
-        $config = require('phinx.php');
+        $config = require(dirname(__DIR__).'/phinx.php');
         $config['environments']['test'] = [
-            'memory' => true,
+            'name' => 'test.db',
             'adapter' => 'sqlite',
-            'connection' => $this->pdo
+            'connection' => $this->pdo,
         ];
 
-        $manager = new Manager(
+        $this->manager = new Manager(
             new Config($config),
-            new StringInput(''),
+            new StringInput(' '),
             new NullOutput()
         );
+        $this->manager->migrate('test');
+    }
 
-        $manager->migrate('test');
-        $manager->seed('test');
+    protected function seedDatabase()
+    {
+        $this->manager->seed('test');
     }
 }

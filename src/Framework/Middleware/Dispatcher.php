@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class Dispatcher Dispatch middlewares.
+ * Class Dispatcher Dispatch list of middleware.
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework\Middleware
  */
@@ -45,22 +45,12 @@ class Dispatcher implements DelegateInterface
      */
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        $middleware = $this->getMiddleware();
-        if (is_null($middleware)) {
+        if (array_key_exists($this->index, $this->middlewares)) {
+            $middleware = $this->middlewares[$this->index];
+            $this->index++;
+        } else {
             throw new \Exception("No middleware intercepted the request");
         }
         return $middleware->process($request, $this);
-    }
-
-    /**
-     * Get the current middleware
-     * @return MiddlewareInterface|null
-     */
-    private function getMiddleware() : ?MiddlewareInterface
-    {
-        if (array_key_exists($this->index, $this->middlewares)) {
-            return $this->middlewares[$this->index++];
-        }
-        return null;
     }
 }

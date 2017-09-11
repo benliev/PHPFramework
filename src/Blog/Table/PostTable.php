@@ -30,7 +30,7 @@ class PostTable
     }
 
     /**
-     * Paginate posts
+     * Paginate records
      * @param int $maxPerPage
      * @param int $currentPage
      * @return Pagerfanta
@@ -49,7 +49,7 @@ class PostTable
     }
 
     /**
-     * Find a post with id
+     * Find a record with id
      * @param int $id
      * @return Post
      */
@@ -57,6 +57,7 @@ class PostTable
     {
         $query = $this->pdo->prepare('SELECT * FROM posts WHERE id = ?');
         $query->execute([$id]);
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         $query->setFetchMode(\PDO::FETCH_CLASS, Post::class);
         return $query->fetch() ?: null;
     }
@@ -64,15 +65,54 @@ class PostTable
     /**
      * Update a record
      * @param int $id
-     * @param array $fields
+     * @param array $params
      * @return bool
      */
-    public function update(int $id, array $fields): bool
+    public function update(int $id, array $params): bool
     {
-        $sql = 'UPDATE posts SET';
-        foreach ($fields as $field => $value) {
-            $sql .= ' $field = :$field';
-        }
-        return true;
+        $fieldQuery = $this->buildFieldQuery($params);
+        $params["id"] = $id;
+        $statement = $this->pdo->prepare("UPDATE posts SET $fieldQuery WHERE id = :id");
+        return $statement->execute($params);
+    }
+
+    /**
+     * Insert a record
+     * @param array $params
+     * @return bool
+     */
+    public function insert(array $params): bool
+    {
+        $fields = array_keys($params);
+        $values = array_map(function ($field) {
+            return ":$field";
+        }, $fields);
+        $statement = $this->pdo->prepare(
+            "INSERT INTO posts (".join(",", $fields).") values (".join(",", $values).")"
+        );
+        return $statement->execute($params);
+    }
+
+    /**
+     * Delete a record
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id) : bool
+    {
+        return $this->pdo->prepare('DELETE FROM posts WHERE id = ?')
+            ->execute([$id]);
+    }
+
+    /**
+     * Build field query
+     * @param array $params
+     * @return string
+     */
+    private function buildFieldQuery(array $params) : string
+    {
+        return join(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($params)));
     }
 }

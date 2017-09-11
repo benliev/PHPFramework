@@ -38,6 +38,7 @@ class PaginatedQuery implements AdapterInterface
      * @param \PDO $pdo
      * @param string $query request to obtain all results
      * @param string $countQuery request to count the number of results
+     * @param string $entity
      */
     public function __construct(\PDO $pdo, string $query, string $countQuery, string $entity)
     {

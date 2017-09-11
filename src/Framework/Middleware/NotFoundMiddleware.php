@@ -1,7 +1,7 @@
 <?php
 
-
 namespace Framework\Middleware;
+
 use GuzzleHttp\Psr7\Response;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;

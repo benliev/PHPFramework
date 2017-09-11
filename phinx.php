@@ -15,6 +15,8 @@ foreach ($modules as $module) {
     }
 }
 
+$container = $app->getContainer();
+
 return [
     'paths' => [
         'migrations' => $migrations,

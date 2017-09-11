@@ -3,6 +3,11 @@
 {% block title "Editer les articles" %}
 
 {% block body %}
+    <p class="text-right">
+        <a href="{{ path('blog.admin.create') }}" class="btn btn-primary">
+            Ajouter un article
+        </a>
+    </p>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -15,7 +20,11 @@
             <tr>
                 <td>{{ item.name }}</td>
                 <td>
-                    <a href="{{ path('admin.blog.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
+                    <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Edit</a>
+                    <form style="display: inline;" action="{{ path('blog.admin.delete', {id: item.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sur ?')">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger" type="submit">Supprimer</button>
+                    </form>
                 </td>
             </tr>
         {% endfor %}

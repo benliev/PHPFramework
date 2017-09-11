@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpUndefinedNamespaceInspection */
+
 use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 

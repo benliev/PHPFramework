@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\Framework\Middleware;
+
 use Framework\Middleware\MethodMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -30,16 +31,13 @@ class MethodMiddlewareTest extends TestCase
             ->setMethods(['process'])
             ->getMock()
         ;
-
         $delegate->expects($this->once())
             ->method('process')
             ->with($this->callback(function (ServerRequestInterface $request) {
                 return $request->getMethod() == 'DELETE';
             }))
         ;
-
         $request = (new ServerRequest('POST', '/demo'))->withParsedBody(['_method' => 'DELETE']);
         $this->middleware->process($request, $delegate);
     }
-    
 }
