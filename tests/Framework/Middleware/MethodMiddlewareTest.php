@@ -6,6 +6,7 @@ use Framework\Middleware\MethodMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -15,10 +16,16 @@ use Psr\Http\Message\ServerRequestInterface;
 class MethodMiddlewareTest extends TestCase
 {
 
-    /**
-     * @var MethodMiddleware
-     */
+    /** @var MethodMiddleware */
     private $middleware;
+
+    private function makeDelegate()
+    {
+        $response = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $delegate = $this->getMockBuilder(DelegateInterface::class)->getMock();
+        $delegate->method('process')->willReturn($response);
+        return $delegate;
+    }
 
     public function setUp()
     {
@@ -27,9 +34,7 @@ class MethodMiddlewareTest extends TestCase
 
     public function testAddMethod()
     {
-        $delegate = $this->getMockBuilder(DelegateInterface::class)
-            ->setMethods(['process'])
-            ->getMock()
+        $delegate = $this->makeDelegate();
         ;
         $delegate->expects($this->once())
             ->method('process')

@@ -13,15 +13,25 @@ use PHPUnit\Framework\TestCase;
 class TextExtensionTest extends TestCase
 {
 
+    /**
+     * @var TextExtension
+     */
+    private $textExtension;
+
+    public function setUp()
+    {
+        $this->textExtension = new TextExtension();
+    }
+
     public function testExcerptWithShortText()
     {
         $text = "Salut";
-        $this->assertEquals($text, (new TextExtension())->excerpt($text), 10);
+        $this->assertEquals($text, $this->textExtension->excerpt($text), 10);
     }
 
     public function testExcerptWithLongText()
     {
         $text = "Salut les gens du monde";
-        $this->assertEquals('Salut les gens...', (new TextExtension())->excerpt($text, 16));
+        $this->assertEquals('Salut les gens...', $this->textExtension->excerpt($text, 16));
     }
 }

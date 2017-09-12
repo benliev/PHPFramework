@@ -2,7 +2,7 @@
 
 namespace Tests\Framework\Modules;
 
-use \Framework\Routing\RouterInterface;
+use \Framework\Routing\Router;
 
 /**
  * Class ErrorModule
@@ -10,7 +10,7 @@ use \Framework\Routing\RouterInterface;
  */
 class ErrorModule
 {
-    public function __construct(RouterInterface $router)
+    public function __construct(Router $router)
     {
         $router->get('/demo', function () {
             return new \stdClass();

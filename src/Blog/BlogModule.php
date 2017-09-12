@@ -29,13 +29,7 @@ class BlogModule extends Module
 
         if ($container->has('admin.prefix')) {
             $adminPrefix = $container->get('admin.prefix');
-            $router->crud("$adminPrefix/posts", AdminBlogAction::class);
-            $router->get("$adminPrefix/posts", AdminBlogAction::class, 'blog.admin.index');
-            $router->get("$adminPrefix/posts/new", AdminBlogAction::class, 'blog.admin.create');
-            $router->post("$adminPrefix/posts/new", AdminBlogAction::class);
-            $router->get("$adminPrefix/posts/{id:\d+}", AdminBlogAction::class, 'blog.admin.edit');
-            $router->post("$adminPrefix/posts/{id:\d+}", AdminBlogAction::class);
-            $router->delete("$adminPrefix/posts", AdminBlogAction::class, 'blog.admin.delete');
+            $router->crud("$adminPrefix/posts", AdminBlogAction::class, 'blog.admin');
         }
     }
 }

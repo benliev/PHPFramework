@@ -7,6 +7,9 @@ use Framework\Actions\RendererAwareAction;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Routing\Router;
+use Framework\Session\FlashService;
+use Framework\Session\SessionInterface;
+use Framework\Validation\Validator;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -32,20 +35,33 @@ class AdminBlogAction
     private $postTable;
 
     /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
+     * @var FlashService
+     */
+    private $flash;
+
+    /**
      * BlogAction constructor.
      * @param RendererInterface $renderer
      * @param PostTable $postTable
      * @param Router $router
+     * @param FlashService $flash
      */
     public function __construct(
         RendererInterface $renderer,
         PostTable $postTable,
-        Router $router
+        Router $router,
+        FlashService $flash
     ) {
     
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postTable = $postTable;
+        $this->flash = $flash;
     }
 
     /**
@@ -89,11 +105,18 @@ class AdminBlogAction
         if ($request->getMethod() === 'POST') {
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y-m-d H:i:s');
-            $this->postTable->update($item->id, $params);
-            return $this->redirect('admin.blog.index');
+            $validator = $this->makeValidator($request);
+            if ($validator->isValid()) {
+                $this->postTable->update($item->id, $params);
+                $this->flash->success('L\'article a bien été mis à jour');
+                return $this->redirect('admin.blog.index');
+            }
+            $params['id'] = $item->id;
+            $item = $params;
+            $errors = $validator->getErrors();
         }
 
-        return $this->render('@blog/admin/edit', compact('item'));
+        return $this->render('@blog/admin/edit', compact('item', 'errors'));
     }
 
     /**
@@ -106,11 +129,17 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y-m-d H:i:s');
             $params['created_at'] = date('Y-m-d H:i:s');
-            $this->postTable->insert($params);
-            return $this->redirect('admin.blog.index');
+            $validator = $this->makeValidator($request);
+            if ($validator->isValid()) {
+                $this->postTable->insert($params);
+                $this->flash->success('L\'article a bien été créer');
+                return $this->redirect('admin.blog.index');
+            }
+            $item = $params;
+            $errors = $validator->getErrors();
         }
 
-        return $this->render('@blog/admin/create');
+        return $this->render('@blog/admin/create', compact('item', 'errors'));
     }
 
     /**
@@ -132,5 +161,20 @@ class AdminBlogAction
     {
         $this->postTable->delete($request->getAttribute('id'));
         return $this->redirect('blog.admin.index');
+    }
+
+    /**
+     * Make a validator
+     * @param Request $request
+     * @return Validator
+     */
+    private function makeValidator(Request $request) : Validator
+    {
+        return (new Validator($request->getParsedBody()))
+            ->required('content', 'name', 'slug')
+            ->length('content', 10)
+            ->length('name', 2, 250)
+            ->length('slug', 2, 50)
+            ->slug('slug');
     }
 }

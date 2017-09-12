@@ -2,3 +2,6 @@
 vendor
 composer.lock
 test.db
+.buildpath
+.project
+.settings

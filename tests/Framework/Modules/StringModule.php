@@ -3,7 +3,7 @@
 namespace Tests\Framework\Modules;
 
 use Framework\Renderer;
-use Framework\Routing\RouterInterface;
+use Framework\Routing\Router;
 
 /**
  * Class StringModule
@@ -12,7 +12,7 @@ use Framework\Routing\RouterInterface;
  */
 class StringModule
 {
-    public function __construct(RouterInterface $router)
+    public function __construct(Router $router)
     {
         $router->get('/demo', function () {
             return 'DEMO';

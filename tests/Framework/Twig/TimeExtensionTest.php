@@ -3,7 +3,6 @@
 
 namespace Test\Framework\Twig;
 
-use Framework\Twig\TextExtension;
 use Framework\Twig\TimeExtension;
 use PHPUnit\Framework\TestCase;
 

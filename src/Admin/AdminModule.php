@@ -4,8 +4,6 @@ namespace App\Admin;
 
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
-use Framework\Routing\Router;
-use Interop\Container\ContainerInterface;
 
 /**
  * Class AdminModule
