@@ -38,8 +38,9 @@ class ValidatorTest extends TestCase
 
     public function testSlugSuccess()
     {
-        $errors = $this->makeValidator(['slug' => 'aze-aze'])
+        $errors = $this->makeValidator(['slug' => 'aze-aze', 'slug2' => 'aze'])
             ->slug('slug')
+            ->slug('slug2')
             ->getErrors();
 
         $this->assertCount(0, $errors);
@@ -48,16 +49,18 @@ class ValidatorTest extends TestCase
     public function testSlugError()
     {
         $errors = $this->makeValidator([
-            'slug' => 'aze-aze',
-            'slug2' => 'aze-aze_Aze',
-            'slug3' => 'aze--aze_aze'
+            'slug' => 'aze-azeAze16',
+            'slug2' => 'aze-aze_aze16',
+            'slug3' => 'aze--aze_aze',
+            'slug4' => 'aze-aze-aze-'
         ])
             ->slug('slug')
             ->slug('slug2')
             ->slug('slug3')
+            ->slug('slug4')
             ->getErrors();
 
-        $this->assertCount(2, $errors);
+        $this->assertCount(4, $errors);
     }
     
     public function testNotEmpty()
@@ -84,19 +87,11 @@ class ValidatorTest extends TestCase
             ->length('content', 12)
             ->getErrors();
         $this->assertCount(1, $errors);
-        $this->assertEquals(
-            'le champs content doit contenir plus de 12 caractères',
-            (string)$errors['content']
-        );
 
         $errors = $this->makeValidator($params)
             ->length('content', 3, 4)
             ->getErrors();
         $this->assertCount(1, $errors);
-        $this->assertEquals(
-            'Le champs content doit contenir entre 3 et 4 caractères',
-            (string)$errors['content']
-        );
 
         $errors = $this->makeValidator($params)
             ->length('content', 3, 20)
@@ -107,10 +102,6 @@ class ValidatorTest extends TestCase
             ->length('content', null, 8)
             ->getErrors();
         $this->assertCount(1, $errors);
-        $this->assertEquals(
-            'le champs content doit contenir moins de 8 caractères',
-            (string)$errors['content']
-        );
     }
 
     public function testDateTime()

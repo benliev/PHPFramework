@@ -11,6 +11,7 @@ use Framework\Routing\RouterTwigExtension;
 use Framework\Session\PhpSession;
 use Framework\Session\SessionInterface;
 use Framework\Twig\FlashExtension;
+use Framework\Twig\BootstrapFormExtension;
 use Framework\Twig\PagerFantaExtension;
 use Framework\Twig\TextExtension;
 use Framework\Twig\TimeExtension;
@@ -26,7 +27,8 @@ return [
         get(PagerFantaExtension::class),
         get(TextExtension::class),
         get(TimeExtension::class),
-        get(FlashExtension::class)
+        get(FlashExtension::class),
+        get(BootstrapFormExtension::class),
     ],
     RendererInterface::class => factory(TwigRendererFactory::class),
     Router::class => object(),

@@ -61,7 +61,7 @@ class Validator
     public function slug(string $key) : self
     {
         $value = $this->getValue($key);
-        if (!is_null($value) && !preg_match('/^([a-z0-9+-?])+$/', $value)) {
+        if (!is_null($value) && !preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value)) {
             $this->addError($key, 'slug');
         }
         return $this;

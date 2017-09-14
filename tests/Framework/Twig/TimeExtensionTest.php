@@ -27,9 +27,8 @@ class TimeExtensionTest extends TestCase
     public function testAgo()
     {
         $date = new \DateTime();
-        $result = '<span class="timeago" datetime="' .
-            $date->format(\DateTime::ISO8601). '">'.
-            $date->format('d/m/Y H:i') . '</span>';
-        $this->assertEquals($result, $this->timeExtension->ago($date));
+        $result = "<span class='timeago' datetime='{$date->format(\DateTime::ISO8601)}'>"
+            ."{$date->format('d/m/Y H:i')}</span>";
+        $this->assertXmlStringEqualsXmlString($result, $this->timeExtension->ago($date));
     }
 }
