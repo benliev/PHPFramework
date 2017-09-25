@@ -5,6 +5,7 @@ namespace Framework\Twig;
 use Framework\Routing\Router;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\View\TwitterBootstrap3View;
+use Twig_SimpleFunction;
 
 /**
  * Class TwigPagerFantaExtension
@@ -27,12 +28,12 @@ class PagerFantaExtension extends \Twig_Extension
     }
 
     /**
-     * @return array
+     * @return Twig_SimpleFunction[]
      */
     public function getFunctions() : array
     {
         return [
-            new \Twig_SimpleFunction(
+            new Twig_SimpleFunction(
                 'paginate',
                 [$this, 'paginate'],
                 ['is_safe' => ['html']]

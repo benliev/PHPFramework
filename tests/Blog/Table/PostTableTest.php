@@ -34,7 +34,7 @@ class PostTableTest extends DatabaseTestCase
     public function testFindUnknowRecord()
     {
         $this->seedDatabase();
-        $post = $this->postTable->find(1000);
+        $post = $this->postTable->find(10000000);
         $this->assertNull($post);
     }
 

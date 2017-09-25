@@ -7,7 +7,6 @@ use Framework\Database\PDOFactory;
 use Framework\Renderer\RendererInterface;
 use Framework\Renderer\TwigRendererFactory;
 use Framework\Routing\Router;
-use Framework\Routing\RouterTwigExtension;
 use Framework\Session\PhpSession;
 use Framework\Session\SessionInterface;
 use Framework\Twig\FlashExtension;
@@ -15,6 +14,7 @@ use Framework\Twig\BootstrapFormExtension;
 use Framework\Twig\PagerFantaExtension;
 use Framework\Twig\TextExtension;
 use Framework\Twig\TimeExtension;
+use Framework\Twig\RouterExtension;
 
 return [
     'database.host' => 'localhost',
@@ -23,7 +23,7 @@ return [
     'database.name' => 'blog',
     'views.path' => dirname(__DIR__).'/views',
     'twig.extensions' => [
-        get(RouterTwigExtension::class),
+        get(RouterExtension::class),
         get(PagerFantaExtension::class),
         get(TextExtension::class),
         get(TimeExtension::class),

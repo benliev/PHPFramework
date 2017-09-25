@@ -7,11 +7,11 @@ $seeds = [];
 
 /** @var \Framework\Module[] $modules */
 foreach ($modules as $module) {
-    if ($module::MIGRATIONS) {
-        $migrations[] = $module::MIGRATIONS;
+    if ($module::getMigrations()) {
+        $migrations[] = $module::getMigrations();
     }
-    if ($module::SEEDS) {
-        $seeds[] = $module::SEEDS;
+    if ($module::getSeeds()) {
+        $seeds[] = $module::getSeeds();
     }
 }
 

@@ -1,14 +1,16 @@
 <?php
 
+namespace Framework\Twig;
 
-namespace Framework\Routing;
+use Framework\Routing\Router;
+use Twig_SimpleFunction;
 
 /**
- * Class RouterTwigExtension
+ * Class RouterExtension
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework\Routing
  */
-class RouterTwigExtension extends \Twig_Extension
+class RouterExtension extends \Twig_Extension
 {
 
     /**
@@ -26,22 +28,23 @@ class RouterTwigExtension extends \Twig_Extension
     }
 
     /**
-     * @return \Twig_SimpleFunction[]
+     * @return Twig_SimpleFunction[]
      */
     public function getFunctions() : array
     {
         return [
-          new \Twig_SimpleFunction('path', [$this, 'pathFor'])
+          new Twig_SimpleFunction('path', [$this, 'pathFor'])
         ];
     }
 
     /**
-     * @param string $path
+     * @param string $name
      * @param array $params
+     * @param array $queryParams
      * @return string
      */
-    public function pathFor(string $path, array $params = []) : string
+    public function pathFor(string $name, array $params = [], array $queryParams = []) : string
     {
-        return $this->router->generateUri($path, $params);
+        return $this->router->generateUri($name, $params, $queryParams);
     }
 }

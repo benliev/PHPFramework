@@ -3,7 +3,6 @@
 namespace Framework\Database;
 
 use Pagerfanta\Adapter\AdapterInterface;
-use Pagerfanta\PagerfantaInterface;
 
 /**
  * Class PaginatedQuery
@@ -72,6 +71,7 @@ class PaginatedQuery implements AdapterInterface
         $statement->bindParam('offset', $offset, \PDO::PARAM_INT);
         $statement->bindParam('length', $length, \PDO::PARAM_INT);
         $statement->execute();
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         $statement->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
         return $statement->fetchAll();
     }

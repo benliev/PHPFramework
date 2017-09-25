@@ -10,11 +10,11 @@ use Framework\Middleware\{
 use Middlewares\Whoops;
 
 return [
+    Whoops::class,
     TrailingSlashMiddleware::class,
     MethodMiddleware::class,
     TrailingSlashMiddleware::class,
     RouterMiddleware::class,
     RouteDispatcherMiddleware::class,
-    Whoops::class,
     NotFoundMiddleware::class,
 ];

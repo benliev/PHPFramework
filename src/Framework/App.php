@@ -4,10 +4,6 @@ namespace Framework;
 
 use DI\ContainerBuilder;
 use Framework\Middleware\Dispatcher;
-use Framework\Routing\Router;
-use GuzzleHttp\Psr7\Response;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,11 +16,6 @@ use Psr\Http\Message\ServerRequestInterface;
 class App
 {
     /**
-     * @var Router
-     */
-    private $router;
-
-    /**
      * @var ContainerInterface
      */
     private $container;
@@ -33,6 +24,16 @@ class App
      * @var string
      */
     private $definition;
+
+    /**
+     * @var Module[]
+     */
+    private $modules;
+
+    /**
+     * @var string[]
+     */
+    private $middlewares;
 
     /**
      * App constructor.
@@ -74,12 +75,11 @@ class App
     public function getContainer()
     {
         if (is_null($this->container)) {
-            // Build container
             $builder = new ContainerBuilder();
             $builder->addDefinitions($this->definition);
             foreach ($this->modules as $module) {
-                if ($module::DEFINITIONS) {
-                    $builder->addDefinitions($module::DEFINITIONS);
+                if ($module::getDefinitions()) {
+                    $builder->addDefinitions($module::getDefinitions());
                 }
             }
             $this->container = $builder->build();

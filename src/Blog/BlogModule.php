@@ -4,6 +4,8 @@ namespace App\Blog;
 
 use App\Blog\Actions\AdminBlogAction;
 use App\Blog\Actions\BlogAction;
+use App\Blog\Actions\CategoryCrudAction;
+use App\Blog\Actions\PostCrudAction;
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
 use Framework\Routing\Router;
@@ -11,11 +13,10 @@ use Psr\Container\ContainerInterface;
 
 class BlogModule extends Module
 {
-
-    const DEFINITIONS = __DIR__.'/config.php';
-    const MIGRATIONS = __DIR__.DIRECTORY_SEPARATOR.'database/migrations';
-    const SEEDS = __DIR__.'/database/seeds';
-
+    /**
+     * BlogModule constructor.
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $renderer = $container->get(RendererInterface::class);
@@ -29,7 +30,35 @@ class BlogModule extends Module
 
         if ($container->has('admin.prefix')) {
             $adminPrefix = $container->get('admin.prefix');
-            $router->crud("$adminPrefix/posts", AdminBlogAction::class, 'blog.admin');
+            $router->crud("$adminPrefix/posts", PostCrudAction::class, 'blog.admin.posts');
+            $router->crud("$adminPrefix/categories", CategoryCrudAction::class, 'blog.admin.categories');
         }
+    }
+
+    /**
+     * Path to definitions file
+     * @return string|null
+     */
+    public static function getDefinitions(): ?string
+    {
+        return __DIR__.'/config.php';
+    }
+
+    /**
+     * Path to seeds directory
+     * @return null|string
+     */
+    public static function getSeeds(): ?string
+    {
+        return __DIR__.'/database/seeds';
+    }
+
+    /**
+     * Path to migrations directory
+     * @return null|string
+     */
+    public static function getMigrations(): ?string
+    {
+        return __DIR__.DIRECTORY_SEPARATOR.'database/migrations';
     }
 }

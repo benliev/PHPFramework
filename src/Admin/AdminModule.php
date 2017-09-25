@@ -11,10 +11,39 @@ use Framework\Renderer\RendererInterface;
  */
 class AdminModule extends Module
 {
-    const DEFINITIONS = __DIR__ . '/config.php';
-
+    /**
+     * AdminModule constructor.
+     * @param RendererInterface $renderer
+     */
     public function __construct(RendererInterface $renderer)
     {
         $renderer->addPath(__DIR__ . '/views', 'admin');
+    }
+
+    /**
+     * Path to definitions file
+     * @return string|null
+     */
+    public static function getDefinitions(): ?string
+    {
+        return __DIR__ . '/config.php';
+    }
+
+    /**
+     * Path to seeds directory
+     * @return null|string
+     */
+    public static function getSeeds(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Path to migrations directory
+     * @return null|string
+     */
+    public static function getMigrations(): ?string
+    {
+        return null;
     }
 }

@@ -3,6 +3,8 @@
 
 namespace Framework\Twig;
 
+use Twig_SimpleFilter;
+
 /**
  * Class TimeExtension
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
@@ -11,12 +13,12 @@ namespace Framework\Twig;
 class TimeExtension extends \Twig_Extension
 {
     /**
-     * @return \Twig_SimpleFilter[]
+     * @return Twig_SimpleFilter[]
      */
     public function getFilters() : array
     {
         return [
-          new \Twig_SimpleFilter(
+          new Twig_SimpleFilter(
               'ago',
               [$this, 'ago'],
               ['is_safe'  => ['html']]
@@ -31,6 +33,6 @@ class TimeExtension extends \Twig_Extension
      */
     public function ago(\DateTime $date, $format = "d/m/Y H:i"): string
     {
-        return "<span class='timeago' datetime='{$date->format(\DateTime::ISO8601)}'>{$date->format($format)}</span>";
+        return "<span class=\"timeago\" datetime=\"{$date->format(\DateTime::ISO8601)}\">{$date->format($format)}</span>";
     }
 }

@@ -3,6 +3,7 @@
 namespace Framework\Twig;
 
 use Framework\Session\FlashService;
+use Twig_SimpleFunction;
 
 /**
  * Class FlashExtension
@@ -27,12 +28,12 @@ class FlashExtension extends \Twig_Extension
     }
 
     /**
-     * @return \Twig_SimpleFunction[]
+     * @return Twig_SimpleFunction[]
      */
     public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction('flash', [$this, 'getFlash'])
+            new Twig_SimpleFunction('flash', [$this, 'getFlash'])
         ];
     }
 

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Framework\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -19,11 +18,6 @@ class Dispatcher implements DelegateInterface
      * @var MiddlewareInterface[]
      */
     private $middlewares;
-
-    /**
-     * @var int
-     */
-    private $index = 0;
 
     /**
      * Add middleware
@@ -45,9 +39,9 @@ class Dispatcher implements DelegateInterface
      */
     public function process(ServerRequestInterface $request) : ResponseInterface
     {
-        if (array_key_exists($this->index, $this->middlewares)) {
-            $middleware = $this->middlewares[$this->index];
-            $this->index++;
+        $middleware = current($this->middlewares);
+        if ($middleware) {
+            next($this->middlewares);
         } else {
             throw new \Exception("No middleware intercepted the request");
         }

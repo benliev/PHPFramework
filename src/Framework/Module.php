@@ -7,9 +7,23 @@ namespace Framework;
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
  * @package Framework
  */
-class Module
+abstract class Module
 {
-    const DEFINITIONS = null;
-    const MIGRATIONS = null;
-    const SEEDS = null;
+    /**
+     * Path to definitions file
+     * @return string|null
+     */
+    public abstract static function getDefinitions(): ?string;
+
+    /**
+     * Path to seeds directory
+     * @return string|null
+     */
+    public abstract static function getSeeds(): ?string;
+
+    /**
+     * Path to migrations directory
+     * @return string|null
+     */
+    public abstract static function getMigrations(): ?string;
 }

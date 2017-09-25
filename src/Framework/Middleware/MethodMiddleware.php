@@ -28,8 +28,9 @@ class MethodMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $parsedBody = $request->getParsedBody();
-        if (isset($parsedBody['_method']) && in_array($parsedBody['_method'], ['DELETE', 'PUT'])) {
-            $request = $request->withMethod($parsedBody['_method']);
+        $method = $parsedBody['_method'] ?? false;
+        if ($method && in_array($method, ['DELETE', 'PUT'])) {
+            $request = $request->withMethod($method);
         }
         return $delegate->process($request);
     }

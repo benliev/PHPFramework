@@ -27,6 +27,6 @@ class NotFoundMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new Response(404, [], 'Erreur 404');
+        return new Response(404, [], 'Error 404');
     }
 }

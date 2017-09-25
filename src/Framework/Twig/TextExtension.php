@@ -2,6 +2,8 @@
 
 namespace Framework\Twig;
 
+use Twig_SimpleFilter;
+
 /**
  * Class TextExtension
  * @author Lievens Benjamin <l.benjamin185@gmail.com>
@@ -10,12 +12,12 @@ namespace Framework\Twig;
 class TextExtension extends \Twig_Extension
 {
     /**
-     * @return \Twig_SimpleFilter[]
+     * @return Twig_SimpleFilter[]
      */
     public function getFilters(): array
     {
         return [
-            new \Twig_SimpleFilter('excerpt', [$this, 'excerpt'])
+            new Twig_SimpleFilter('excerpt', [$this, 'excerpt'])
         ];
     }
 

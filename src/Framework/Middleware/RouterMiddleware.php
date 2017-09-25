@@ -43,11 +43,9 @@ class RouterMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $route = $this->router->match($request);
-
         if (is_null($route)) {
             return $delegate->process($request);
         }
-
         foreach ($route->getParams() as $key => $value) {
             $request = $request->withAttribute($key, $value);
         }

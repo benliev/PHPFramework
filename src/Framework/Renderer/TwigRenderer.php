@@ -15,6 +15,7 @@ class TwigRenderer implements RendererInterface
      * @var \Twig_Environment
      */
     private $twig;
+
     /**
      * @var \Twig_Loader_Filesystem
      */
@@ -58,7 +59,7 @@ class TwigRenderer implements RendererInterface
     /**
      * Add global variables for all views
      * @param string $name
-     * @param $value
+     * @param mixed $value
      */
     public function addGlobal(string $name, $value) : void
     {
